@@ -115,6 +115,7 @@ export default function App() {
           >
             Reset
           </button>
+        </div>
         </header>
 
         {/* Main Content */}
