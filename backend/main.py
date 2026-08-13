@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from pydantic import BaseModel
@@ -119,3 +121,12 @@ def get_diagnostics():
         "classes": model.names,
         "backend": "local_yolo"
     }
+
+# Mount frontend static files
+frontend_build_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+if os.path.exists(frontend_build_path):
+    app.mount("/", StaticFiles(directory=frontend_build_path, html=True), name="static")
+else:
+    @app.get("/")
+    def read_root():
+        return {"message": "Frontend build not found. Run 'npm run build' in the frontend directory."}
